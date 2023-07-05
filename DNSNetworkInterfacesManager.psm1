@@ -1,5 +1,5 @@
 using module .\DNSNetworkInterface.psm1
-class DNSNetworkInterfaces {
+class DNSNetworkInterfacesManager {
     
     DNSNetworkInterfaces() {
     }
@@ -23,7 +23,12 @@ class DNSNetworkInterfaces {
     }
 
     SetStaticIPDNS([string]$interfaceIndex){
-        $interface =  Get-NetIPConfiguration -InterfaceIndex $interfaceIndex 
-        Get-NetIpAddress -InterfaceIndex $interface.InterfaceIndex  | New-NetIpAddress  IpAddress $interface.IPv4Address -PrefixLength 24 -DefaultGateway 192.168.1.1
+        $interfaceIpConfiguration =  Get-NetIPConfiguration -InterfaceIndex $interfaceIndex 
+        $interfaceDNSConfiguration = Get-DnsClientServerAddress -InterfaceIndex $interfaceIndex  -AddressFamily IPv4 
+        Remove-NetRoute -InterfaceIndex  $interfaceIndex -AddressFamily IPv4 -Confirm:$false
+        Remove-NetIPAddress -InterfaceIndex  $interfaceIndex  -AddressFamily IPv4  -Confirm:$false
+        Set-DnsClientServerAddress -InterfaceIndex $interfaceIndex -ServerAddresses ($interfaceIpConfiguration.IPv4Address.IPAddress, $interfaceDNSConfiguration.ServerAddresses[0]) 
+        New-NetIpAddress -InterfaceIndex $interfaceIndex  -IPAddress $interfaceIpConfiguration.IPv4Address.IPAddress -PrefixLength  $interfaceIpConfiguration.IPv4Address.PrefixLength -DefaultGateway $interfaceIpConfiguration.IPv4DefaultGateway.NextHop  -AddressFamily IPv4
     }
 }
+

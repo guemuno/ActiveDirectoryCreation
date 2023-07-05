@@ -1,7 +1,7 @@
 using module .\DNSNetworkInterface.psm1
-using module .\DNSNetworkInterfaces.psm1
+using module .\DNSNetworkInterfacesManager.psm1
 function Invoke-ActiveDirectoryCreation() {
-    [DNSNetworkInterfaces]$ni = [DNSNetworkInterfaces]::new()
+    [DNSNetworkInterfacesManager]$ni = [DNSNetworkInterfacesManager]::new()
     $SelectedInterfaceIndex  = ""
     $canContinue = $false
         do{
