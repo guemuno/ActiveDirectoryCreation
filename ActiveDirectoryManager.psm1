@@ -1,0 +1,7 @@
+class ActiveDirectoryManger {
+    
+    ActiveDirectoryManger()
+    {
+        
+    }
+}
