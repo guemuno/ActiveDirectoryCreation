@@ -14,7 +14,9 @@ function Invoke-ActiveDirectoryCreation() {
                 $canContinue = $true
             }
         }while ($true -ne $canContinue)
-        $ni.SetStaticIPDNS($SelectedInterfaceIndex)
+        $resultStaticIP = $ni.SetStaticIPDNS($SelectedInterfaceIndex)
+        Write-Host($resultStaticIP)
+        
 }
 
 
