@@ -1,6 +1,8 @@
 using module .\DNSNetworkInterface.psm1
 using module .\DNSNetworkInterfacesManager.psm1
 using module .\ActiveDirectoryManager.psm1
+Import-Module ADDSDeployment
+
 function Invoke-ActiveDirectoryCreation() {
         [DNSNetworkInterfacesManager]$ni = [DNSNetworkInterfacesManager]::new()
         [ActiveDirectoryManager]$activeDirecoryManager = [ActiveDirectoryManager]::new()

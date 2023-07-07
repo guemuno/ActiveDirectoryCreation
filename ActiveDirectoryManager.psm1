@@ -13,11 +13,13 @@ class ActiveDirectoryManager {
 
     [string]SetUpDomainServices([string]$DomainName)
     {
+        try{
         $forest = Get-ADForest
         if( $forest.Domains) {
-            return "There is a domain installed " + $forest.Domains
+                return "There is a domain installed " + $forest.Domains
+            }
         }
-        else {
+        catch {  }
         $domain = [uri]$DomainName
         $domainNetbiosName = $domain.Host -replace '^www\.' -replace '\..+$'
 
@@ -33,8 +35,7 @@ class ActiveDirectoryManager {
             -NoRebootOnCompletion:$false `
             -SysvolPath "C:\Windows\SYSVOL" `
             -Force:$true
-            $forest = Get-ADForest
-            return "The installed domain  is " + $forest.Domains
+            
+            Restart-Computer
         }
-    }
 }
