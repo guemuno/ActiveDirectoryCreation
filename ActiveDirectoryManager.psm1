@@ -7,12 +7,17 @@ class ActiveDirectoryManager {
         $statusAD = Get-WindowsFeature -Name AD-Domain-Services
         if(-not $statusAD.Installed)
         {
-        Add-WindowsFeature AD-Domain-Services
+            Add-WindowsFeature AD-Domain-Services -IncludeManagementTools -IncludeAllSubFeature 
         }
     }
 
     SetUpDomainServices([string]$DomainName)
     {
+        $forest = Get-ADForest
+        if( $forest.Domains) {
+            return 
+        }
+        else {
         $domain = [uri]$DomainName
         $domainNetbiosName = $domain.Host -replace '^www\.' -replace '\..+$'
 
@@ -28,5 +33,6 @@ class ActiveDirectoryManager {
             -NoRebootOnCompletion:$false `
             -SysvolPath "C:\Windows\SYSVOL" `
             -Force:$true
+        }
     }
 }

@@ -29,10 +29,10 @@ class DNSNetworkInterfacesManager {
             Remove-NetIPAddress -InterfaceIndex  $interfaceIndex  -AddressFamily IPv4  -Confirm:$false
             Set-DnsClientServerAddress -InterfaceIndex $interfaceIndex -ServerAddresses ($interfaceIpConfiguration.IPv4Address.IPAddress, $interfaceDNSConfiguration.ServerAddresses[0]) 
             New-NetIpAddress -InterfaceIndex $interfaceIndex  -IPAddress $interfaceIpConfiguration.IPv4Address.IPAddress -PrefixLength  $interfaceIpConfiguration.IPv4Address.PrefixLength -DefaultGateway $interfaceIpConfiguration.IPv4DefaultGateway.NextHop  -AddressFamily IPv4
-            return "the ethernet interface is configured as static IP"
+            return "the ethernet interface is configured as static IP after the AD installation add the ip: " + $interfaceIpConfiguration.IPv4Address.IPAddress + " as secondary dns server ip"
         }
         else {
-            return "the ethernet interface have already an static IP"
+            return "the ethernet interface have already an static IP after the AD installation add the ip: " + $interfaceIpConfiguration.IPv4Address.IPAddress + " as secondary dns server ip"
         }
     }
 }

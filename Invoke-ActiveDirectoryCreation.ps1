@@ -30,6 +30,7 @@ function Invoke-ActiveDirectoryCreation() {
         $activeDirecoryManager.InstallDomainServices();
         Write-Host("Domain Services Installed")
         $newDomainName = Read-Host  -Prompt  "Insert the new domain "
+        Write-Host "After forest is installed the machine will reboot"
         $activeDirecoryManager.SetUpDomainServices($newDomainName)
 }
 
