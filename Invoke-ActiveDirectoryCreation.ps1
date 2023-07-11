@@ -35,6 +35,9 @@ function Invoke-ActiveDirectoryCreation() {
         Write-Host "After forest is installed the machine will reboot"
         $resultDomain = $activeDirecoryManager.SetUpDomainServices($newDomainName)
         Write-Host $resultDomain
+        $filePath= Read-Host  -Prompt  "Insert path for the users file "
+        $activeDirecoryManager.CreateUsersAD($filePath)
+
 }
 
 
