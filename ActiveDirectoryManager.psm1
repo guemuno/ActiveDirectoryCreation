@@ -60,8 +60,9 @@ class ActiveDirectoryManager {
         return  $users
     }
 
-    CreateUsersAD([string]$FilePath)
+    [System.Collections.ArrayList]CreateUsersAD([string]$FilePath)
     {
+        $results = [System.Collections.ArrayList]::new()
         $users = $this.GetUsersFromExcel($FilePath)
         foreach($user in $users)
         {
@@ -69,7 +70,28 @@ class ActiveDirectoryManager {
             $existUser = Get-ADUser -Filter (" SamAccountName -eq '" + $user.UserName + "'")
             if (-not $existUser) {
                 New-ADUser  -AccountPassword $securePassword  -Name ($user.LastName + " " + $user.Name)  -GivenName $user.LastName -Surname $user.Name     -ChangePasswordAtLogon  $true -Department $user.Department  -Enabled  $true -SamAccountName $user.UserName -Title $user.JobTitle
+                $results.Add("the user " + $user.LastName + " " + $user.Name  +" has been added with the password: " + "MyPassword" + $user.DateofBirth.ToString("yyyy-MM-dd")+ "`n")
+            }
+            else {
+                $results.Add("the user " + $user.LastName + " " + $user.Name  +" already exist`n")
             }
         }
+        return $results
+    }
+
+    SetDefaultPolicies()
+    {
+        $policyName = "Initial policies"
+        $currentPolicy = Get-GPO -all   | Where-Object {$_.DisplayName  -match $policyName }
+        if(-not $currentPolicy)
+        {
+            $dc =Get-ADDomainController
+            New-GPO -Name $policyName -Comment "Default client settings for PCs"  | New-GPLink -Target $dc.DefaultPartition
+        }
+        Set-GPRegistryValue -Name $policyName -Key "HKCU\Control Panel\\Desktop" -ValueName ScreenSaveTimeOut -Type DWord -Value 300
+        Set-GPRegistryValue -Name $policyName -Key "HKCU\Software\Policies\Microsoft\Windows\Control Panel" -ValueName "ProhibitAccessToControlPanel" -Value 1 -Type DWORD
+        Set-GPRegistryValue -Name $policyName -Key "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -ValueName "NoControlPanel" -Value 1 -Type DWORD
+        Set-GPRegistryValue -Name $policyName -Key "HKCU\Software\Policies\Microsoft\Windows\RemovableStorageDevices" -ValueName "Deny_All" -Value 1 -Type DWORD
+        
     }
 }

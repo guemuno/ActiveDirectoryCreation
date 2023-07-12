@@ -36,8 +36,12 @@ function Invoke-ActiveDirectoryCreation() {
         $resultDomain = $activeDirecoryManager.SetUpDomainServices($newDomainName)
         Write-Host $resultDomain
         $filePath= Read-Host  -Prompt  "Insert path for the users file "
-        $activeDirecoryManager.CreateUsersAD($filePath)
-
+        if($filePath){
+            $resultUsers = $activeDirecoryManager.CreateUsersAD($filePath)
+            Write-Host $resultUsers
+        }
+        $activeDirecoryManager.SetDefaultPolicies()
+        Write-Host "Default policies created"
 }
 
 
